@@ -11,13 +11,22 @@ from plotly.subplots import make_subplots
 # 1. CONFIGURAÇÃO DA PÁGINA STREAMLIT
 # ==============================================================================
 st.set_page_config(layout="wide")
-st.title("Análise de Leituras - Corda Vibrante 4 horas")
+st.title("Análise de Leituras - Corda Vibrante")
 
 # Campo Interativo para Arrastar e Soltar o Arquivo
 uploaded_file = st.file_uploader(
     "Arraste e solte o seu arquivo de origem aqui (.dat ou .csv)",
     type=["dat", "csv"]
 )
+
+# Quantidade de dias usada como referência para calcular a disponibilidade
+quantidade_dias = st.number_input(
+    "Quantidade de dias (referência para cálculo de disponibilidade)",
+    min_value=1,
+    value=30,
+    step=1
+)
+CICLOS_POR_DIA = 6  # leituras a cada 4 horas: 01h, 05h, 09h, 13h, 17h, 21h
 
 # O script só executa se houver um arquivo carregado pelo usuário
 if uploaded_file is not None:
@@ -58,22 +67,23 @@ if uploaded_file is not None:
             # ==================================================================
             st.subheader("📊 Métricas de Resumo (Corda Vibrante)")
 
+            ciclos_esperados = quantidade_dias * CICLOS_POR_DIA
+
             resumo_data = []
             for c_impar, _ in pares_validos:
                 if c_impar and not df_filtered[c_impar].isna().all():
                     v_min = df_filtered[c_impar].min()
                     v_max = df_filtered[c_impar].max()
                     diff = v_max - v_min
-                    total_linhas = len(df_filtered)
-                    qtd_em_branco = df_filtered[c_impar].isna().sum()
-                    perc_em_branco = (qtd_em_branco / total_linhas * 100) if total_linhas > 0 else 0
+                    qtd_valida = df_filtered[c_impar].notna().sum()
+                    disponibilidade = (qtd_valida / ciclos_esperados * 100) if ciclos_esperados > 0 else 0
 
                     resumo_data.append({
                         "Variável Ímpar": c_impar,
                         "Valor Mínimo": v_min,
                         "Valor Máximo": v_max,
                         "Diferença": diff,
-                        "% Células em Branco": perc_em_branco
+                        "Disponibilidade (%)": disponibilidade
                     })
 
             df_resumo = pd.DataFrame(resumo_data)
@@ -84,7 +94,7 @@ if uploaded_file is not None:
                     "Valor Mínimo": "{:.2f}",
                     "Valor Máximo": "{:.2f}",
                     "Diferença": "{:.2f}",
-                    "% Células em Branco": "{:.1f}%"
+                    "Disponibilidade (%)": "{:.1f}%"
                 })
                 st.dataframe(df_estilizado, use_container_width=True, hide_index=True)
             else:
@@ -111,7 +121,7 @@ if uploaded_file is not None:
                     "Valor Mínimo": "{:.2f}",
                     "Valor Máximo": "{:.2f}",
                     "Diferença": "{:.2f}",
-                    "% Células em Branco": "{:.1f}%"
+                    "Disponibilidade (%)": "{:.1f}%"
                 }).set_table_styles([
                     {'selector': 'th', 'props': [
                         ('background-color', '#4f81bd'),
