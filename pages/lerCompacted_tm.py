@@ -18,7 +18,7 @@ st.title("Análise de Leituras - Tiltímetros 2 minutos")
 # Usado para estimar a quantidade total de leituras esperadas (considerando
 # amostragem a cada 2 minutos) e, a partir daí, calcular a % de células
 # vazias na tabela de métricas de resumo.
-n_dias = st.number_input("Nº de dias", min_value=1, step=1, value=1)
+n_dias = st.number_input("Nº de dias para o cálculo da disponibilidade", min_value=1, step=1, value=1)
 n_dias = int(n_dias)
 quantidade_minutos = n_dias * 24 * 60
 metade_minutos = quantidade_minutos / 2
