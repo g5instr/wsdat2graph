@@ -12,7 +12,7 @@ from plotly.subplots import make_subplots
 # 1. CONFIGURAÇÃO DA PÁGINA STREAMLIT
 # ==============================================================================
 st.set_page_config(layout="wide")
-st.title("Análise de Leituras - Tiltímetros")
+st.title("Análise de Leituras - Tiltímetros 2 minutos")
 
 # Campo para inserção manual do número de dias abrangidos pela leitura.
 # Usado para estimar a quantidade total de leituras esperadas (considerando
