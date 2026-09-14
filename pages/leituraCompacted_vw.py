@@ -11,7 +11,7 @@ from plotly.subplots import make_subplots
 # 1. CONFIGURAÇÃO DA PÁGINA STREAMLIT
 # ==============================================================================
 st.set_page_config(layout="wide")
-st.title("Análise de Leituras - Corda Vibrante")
+st.title("Análise de Leituras - Corda Vibrante, scan = 4 horas")
 
 # Campo Interativo para Arrastar e Soltar o Arquivo
 uploaded_file = st.file_uploader(
